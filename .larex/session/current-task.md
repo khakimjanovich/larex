@@ -2,33 +2,40 @@
 
 ## Requirement
 
-REQ-0005: Requirement Normalization.
+Milestone 2: Requirement to Plan Pipeline (GitHub milestone #3).
 
 ## Goal
 
-Turn a local Markdown requirement file into a structured `RequirementBrief`.
+Turn a GitHub milestone into a structured architecture plan.
 
 ## Scope
 
-Created:
+Done:
 
 - `app/ArchEngine/DTO/RequirementBrief.php`
-- `app/ArchEngine/Tools/RequirementFileReader.php`
-- `app/ArchEngine/Stages/NormalizeRequirementStage.php`
-- `tests/Feature/ArchEngine/NormalizeRequirementStageTest.php`
-- `docs/requirements/REQ-0005-requirement-normalization.md`
+- `app/ArchEngine/Stages/NormalizeGitHubMilestoneStage.php`
+- `app/ArchEngine/Tools/GitHubClient.php`
+- `app/ArchEngine/Tools/GitHubClientException.php`
+- `app/Console/Commands/LarexMilestoneCommand.php`
+- `tests/Feature/ArchEngine/NormalizeGitHubMilestoneStageTest.php`
+
+Remaining open issues (https://github.com/khakimjanovich/larex/milestone/3):
+
+- Integrate target inspection into pipeline as a stage (#8)
+- Basic local artifact output — JSON file per pipeline run (#7)
+- ArchitecturePlan DTO and stage (#13)
+- Evidence reference structure (#14)
+- larex:plan command produces an architecture plan from a requirement (#11)
+- Pipeline run artifacts must not mix Larex internal files with target project files (#12)
 
 ## Out of Scope
 
-- top-level `larex` binary
-- additional CLI commands beyond `larex:inspect`
-- GitHub integration
-- AI parsing
-- approval gates
+- local Markdown requirement files (removed)
+- risk auditing
 - patch planning
+- approval gates
 - target project file mutation
-- Composer dependency changes
 
 ## Status
 
-Implemented.
+In progress.

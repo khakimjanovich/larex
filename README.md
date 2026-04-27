@@ -60,7 +60,7 @@ It can:
 - continue after a recoverable failed stage
 - run `php artisan larex:inspect`
 - inspect an explicit target with `php artisan larex:inspect --project=/path`
-- normalize local Markdown requirement files into `requirement-brief-v1`
+- import a GitHub milestone as `requirement-brief-v1` via `php artisan larex:milestone`
 
 It cannot yet:
 
@@ -88,7 +88,8 @@ Example future commands:
 
 ```bash
 larex inspect
-larex plan docs/requirements/REQ-0001.md
+larex milestone khakimjanovich larex 3
+larex plan RUN-0001
 larex audit RUN-0001
 larex patch RUN-0001 --dry-run
 larex approve RUN-0001
@@ -135,7 +136,7 @@ Goal: turn a requirement file into structured planning artifacts.
 Planned:
 
 - `RequirementBrief` DTO: implemented
-- requirement normalization stage: implemented
+- GitHub milestone intake stage: implemented
 - target inspection stage integrated into the pipeline
 - architecture plan DTO and stage
 - evidence reference structure
@@ -220,12 +221,10 @@ app/
       TargetProject.php
       TargetProjectDetector.php
     Stages/
-      NormalizeRequirementStage.php
+      NormalizeGitHubMilestoneStage.php
     Tools/
-      RequirementFileReader.php
-
-docs/
-  requirements/
+      GitHubClient.php
+      GitHubClientException.php
 
 config/larex.php
 
@@ -274,10 +273,6 @@ Current session handoff lives here:
 - `.larex/session/codex-session-brief.md`
 - `.larex/session/current-task.md`
 
-Requirement files live in:
-
-- `docs/requirements/`
-
 ## Testing
 
 Use the smallest relevant verification command for the change.
@@ -295,11 +290,6 @@ Do not claim tests passed unless they were actually run.
 
 ## Next Step
 
-Implement REQ-0006: GitHub Read Integration or Architecture Plan Stage.
+Implement Milestone 2 remaining work: architecture plan DTO and stage, evidence reference structure, artifact output, and `larex:plan` command.
 
-Open decision:
-
-```txt
-If GitHub milestones are the planning source, build read-only GitHub intake next.
-Otherwise build the first Architecture Plan stage.
-```
+Track progress on GitHub: https://github.com/khakimjanovich/larex/milestone/3

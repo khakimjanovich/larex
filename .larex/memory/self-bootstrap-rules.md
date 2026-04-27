@@ -7,13 +7,14 @@ Larex must be able to build Larex from day one.
 During self-bootstrapping:
 
 - Larex repository is the selected target project.
-- New features begin as requirement files.
+- New features begin as GitHub milestones with labeled issues.
 - Changes should move through requirement, facts, plan, risk, patch, approval, implementation, and verification.
 
 ## Required Flow
 
 ```txt
-docs/requirements/REQ-xxxx.md
+GitHub milestone (khakimjanovich/larex)
+-> larex:milestone khakimjanovich larex {number}
 -> RequirementBrief
 -> TargetProjectFacts
 -> ArchitecturePlan
@@ -25,9 +26,9 @@ docs/requirements/REQ-xxxx.md
 -> ADR or LearningArtifact if accepted
 ```
 
-## Current Bootstrap Exception
+## Planning Source
 
-REQ-0001 creates durable memory only. It intentionally creates no PHP source code, CLI commands, dependencies, or runtime pipeline.
+GitHub milestones are the only planning source. Local Markdown requirement files are no longer used or supported. Use the `larex:milestone` command to import milestones.
 
 ## Durable Memory Rule
 
