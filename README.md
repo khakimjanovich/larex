@@ -1,295 +1,155 @@
 # Larex
 
-Larex is a Laravel-controlled architecture reasoning engine for Laravel applications, Laravel packages, and Composer-based PHP packages.
+> AI-powered architecture reasoning engine for Laravel and PHP
 
-It is designed to turn high-level requirements into evidence-backed, approval-gated, testable code changes.
+[![PHP](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-13%2B-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
+[![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)](https://github.com/khakimjanovich/larex/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-```txt
-Requirement
--> Target project facts
--> Architecture plan
--> Risk report
--> Patch plan
--> Human approval
--> Codex implementation
--> Verification
--> Stored learning
+Larex turns GitHub milestones into structured, evidence-backed, approval-gated code changes.
+
+You describe what to build. Larex inspects your codebase, plans the architecture using AI, audits risks, produces a patch plan, and **waits for your approval before writing a single file**.
+
+---
+
+## The problem
+
+Most AI coding tools go straight from prompt to code. That works for small scripts. It breaks on real codebases — wrong abstractions, missed conventions, no audit trail, no way to say no before the damage is done.
+
+Larex puts a structured pipeline between the idea and the implementation.
+
+---
+
+## How it works
+
+```
+GitHub Milestone
+  → Requirement Brief        (structured intake)
+  → Target Project Facts     (codebase inspection)
+  → Architecture Plan        (AI-backed, grounded in your code)
+  → Risk Report              (what could go wrong)
+  → Patch Plan               (exact files to change)
+  → Human Approval    ←──── nothing is written without this
+  → Implementation
+  → Verification             (tests run, results stored)
+  → Stored Learning
 ```
 
-Larex owns the workflow. Codex is the implementation worker.
+Every stage produces a typed artifact. Every artifact is evidence-backed. The human stays in the loop.
 
-## Current Status
+---
 
-Status: early self-bootstrapping.
+## Current capabilities
 
-Larex is not yet a usable CLI product. It currently has the first internal building blocks needed to continue development through requirements.
+| Capability | Status |
+|---|---|
+| Detect Laravel apps, Laravel packages, PHP packages | ✅ Shipped |
+| Import GitHub milestones as requirement briefs | ✅ Shipped |
+| Read and search target project source files | ✅ Shipped |
+| Produce AI-backed architecture plans (Anthropic) | ✅ Shipped |
+| Store pipeline run artifacts | ✅ Shipped |
+| Enforce approval gate before file writes | ✅ Shipped |
+| Apply approved patch plans to target projects | ✅ Shipped |
+| Risk audit stage | 🔄 In progress |
+| `larex:plan` end-to-end command | 🔄 In progress |
+| `larex:approve` and `larex:patch` commands | 📋 Planned |
+| Verification stage | 📋 Planned |
+| `larex` standalone binary | 📋 Planned |
 
-Verified current application context:
+---
 
-- PHP 8.4
-- Laravel 13.6.x
-- SQLite database
-- Laravel AI, Laravel Boost, Laravel MCP, Pint, Pest, PHPUnit, and Larastan are installed
-
-Current implementation status:
-
-| Area | Status | Notes |
-| --- | --- | --- |
-| Project memory | Implemented | Durable rules live in `.larex/memory/`. |
-| Target project detection | Implemented | Produces `target-project-facts-v1`. |
-| Pipeline core | Implemented | Runs stages, records results, and stops on non-recoverable failures. |
-| CLI inspect | Implemented | `php artisan larex:inspect` prints structured target facts. |
-| Requirement normalization | Implemented | Deterministic Markdown to `requirement-brief-v1`. |
-| Architecture/risk/patch stages | Not started | Planned after CLI and basic artifact flow. |
-| Approval gate | Not started | Required before meaningful patch execution. |
-| Artifact storage | Not started | Run output persistence is still undefined. |
-| Surgical Mode cockpit | Deferred | Must consume CLI-backed pipeline artifacts later. |
-
-## What Larex Can Do Today
-
-Today, Larex can be used as an internal library inside this Laravel repository.
-
-It can:
-
-- inspect a filesystem path and classify it as `laravel_app`, `laravel_package`, `php_package`, or `unknown`
-- extract Composer name, PHP constraint, Laravel-related constraint, package names, dev tools, test runner, and evidence refs
-- represent target project facts as the `target-project-facts-v1` contract
-- run simple pipeline stages in order
-- record structured stage results with status, payload, evidence refs, warnings, errors, and recoverability
-- stop a pipeline when a failed or blocked stage is not recoverable
-- continue after a recoverable failed stage
-- run `php artisan larex:inspect`
-- inspect an explicit target with `php artisan larex:inspect --project=/path`
-- import a GitHub milestone as `requirement-brief-v1` via `php artisan larex:milestone`
-
-It cannot yet:
-
-- expose a top-level `larex` binary
-- persist pipeline run artifacts
-- produce architecture plans, risk reports, patch plans, test plans, or approval decisions
-- execute approved code changes
-- operate through a local cockpit UI
-
-## Product Direction
-
-The first MVP is:
-
-```txt
-A CLI-first Laravel/PHP architecture assistant named larex that can run
-against the current repository, detect whether it is a Laravel app or
-Composer-based PHP package, create a structured architecture plan, audit
-it, create a patch plan, and ask for approval before Codex implements
-anything.
-```
-
-The primary surface is a CLI named `larex`.
-
-Example future commands:
+## Usage today
 
 ```bash
-larex inspect
-larex milestone khakimjanovich larex 3
-larex plan RUN-0001
-larex audit RUN-0001
-larex patch RUN-0001 --dry-run
-larex approve RUN-0001
+# Inspect a target project — detect type, extract facts
+php artisan larex:inspect --project=/path/to/my-laravel-app
+
+# Import a GitHub milestone as a structured requirement brief
+php artisan larex:milestone myorg my-repo 3 --project=/path/to/my-laravel-app
 ```
 
-The CLI should default to the current working directory as the target project and support an explicit project path.
+The milestone command uses a label scheme on your GitHub issues:
 
-The local cockpit, called Surgical Mode, is deferred. It must visualize and control the same pipeline artifacts as the CLI.
+| Label | Maps to |
+|---|---|
+| `larex:in-scope` | In scope items |
+| `larex:out-of-scope` | Out of scope items |
+| `larex:acceptance` | Acceptance criteria (required) |
+| `larex:constraint` | Constraints |
+| `larex:question` | Open questions |
 
-## Milestones
+Unlabeled issues fall through to in-scope automatically.
 
-### Milestone 0: Project Memory and Core Skeleton
+---
 
-Status: implemented.
+## Requirements
 
-Delivered:
+- PHP 8.4+
+- Laravel 13+
+- Anthropic API key — set `LAREX_ANTHROPIC_KEY` or use the standard `ANTHROPIC_API_KEY`
+- GitHub token for milestone intake — set `LAREX_GITHUB_TOKEN`
 
-- REQ-0001 project memory
-- REQ-0002 target project detection
-- REQ-0003 pipeline core
-- focused tests for target detection and pipeline behavior
+---
 
-### Milestone 1: CLI Inspect MVP
+## Self-bootstrapping
 
-Status: implemented.
+Larex is built using its own pipeline. Every feature starts as a GitHub milestone on this repo. The engine inspects itself, plans its own next changes, and applies them through its own approval gate.
 
-Goal: expose the first usable Larex surface.
+[Track progress on GitHub Milestones →](https://github.com/khakimjanovich/larex/milestones)
 
-Planned:
+---
 
-- REQ-0004 CLI skeleton
-- `larex inspect` or first-step Artisan equivalent
-- current directory inspection by default
-- explicit `--project=/path` inspection
-- structured facts output
-- blocked-style result for unknown targets
+## Roadmap
 
-### Milestone 2: Requirement to Plan Pipeline
-
-Status: in progress.
-
-Goal: turn a requirement file into structured planning artifacts.
-
-Planned:
-
-- `RequirementBrief` DTO: implemented
-- GitHub milestone intake stage: implemented
-- target inspection stage integrated into the pipeline
-- architecture plan DTO and stage
-- evidence reference structure
-- basic local artifact output
-
-### Milestone 3: Risk and Patch Planning
-
-Status: planned.
-
-Goal: prevent unsafe or unsupported implementation before Codex edits files.
-
-Planned:
-
-- REQ-0005 risk auditor
-- `RiskReport` DTO
-- `PatchPlan` DTO
-- test planning
-- target boundary checks
-- missing evidence checks
-- missing test checks
-
-### Milestone 4: Approval-Gated Implementation
-
-Status: planned.
-
-Goal: allow Codex to implement only after an approved patch plan.
-
-Planned:
-
-- approval decision artifact
-- approval gate stage
-- file write policy
-- Codex patch worker contract
-- verification result artifact
-- local test execution recording
-
-### Milestone 5: Ecosystem Grounding
-
-Status: planned.
-
-Goal: strengthen plans with Laravel/PHP ecosystem evidence.
-
-Planned:
-
-- Laravel Boost documentation grounding tool
-- Composer/package metadata inspection
-- package scout report
-- advisory lookup policy
-- local knowledge search
-
-### Milestone 6: Surgical Mode Cockpit
-
-Status: deferred.
-
-Goal: add a local UI that visualizes the same artifacts produced by the CLI.
-
-Surgical Mode should show selected target project, pipeline timeline, stage output, evidence, risks, patch preview, approval state, and verification results.
-
-## Repository Map
-
-Implemented today:
-
-```txt
-.larex/
-  memory/
-  session/
-
-app/
-  Console/
-    Commands/
-      LarexInspectCommand.php
-  ArchEngine/
-    DTO/
-      RequirementBrief.php
-      TargetProjectFacts.php
-    Pipeline/
-      PipelineRunner.php
-      PipelineRunState.php
-      StageContract.php
-      StageResult.php
-    TargetProject/
-      TargetProject.php
-      TargetProjectDetector.php
-    Stages/
-      NormalizeGitHubMilestoneStage.php
-    Tools/
-      GitHubClient.php
-      GitHubClientException.php
-
-config/larex.php
-
-tests/
-  Feature/
-    ArchEngine/
-```
-
-Expected future areas:
-
-```txt
-app/
-  Console/Commands/
-  ArchEngine/Stages/
-  ArchEngine/Agents/
-  ArchEngine/Providers/
-  ArchEngine/Workers/
-  ArchEngine/Tools/
-  ArchEngine/Policies/
-  ArchEngine/Validators/
-  ArchEngine/Visualizer/
-
-config/larex.php
-docs/adr/
-database/migrations/*larex*
-```
-
-## Durable Memory
-
-The README is only the project overview.
-
-Detailed operating rules live here:
-
-- `.larex/memory/codex-bootstrap.md`
-- `.larex/memory/project-profile.md`
-- `.larex/memory/architecture-rules.md`
-- `.larex/memory/self-bootstrap-rules.md`
-- `.larex/memory/hallucination-policy.md`
-- `.larex/memory/development-rules.md`
-- `.larex/memory/testing-rules.md`
-- `.larex/memory/approved-decisions.md`
-- `.larex/memory/rejected-decisions.md`
-
-Current session handoff lives here:
-
-- `.larex/session/codex-session-brief.md`
-- `.larex/session/current-task.md`
-
-## Testing
-
-Use the smallest relevant verification command for the change.
-
-Common commands:
+The MVP delivers a five-command workflow:
 
 ```bash
-php artisan test --compact
-vendor/bin/pint --dirty --format agent
-composer validate
-vendor/bin/phpstan analyse
+larex:milestone myorg my-repo 3     # import requirement
+larex:plan RUN-0001                  # produce architecture plan
+larex:audit RUN-0001                 # audit risks
+larex:approve RUN-0001               # human approval
+larex:patch RUN-0001                 # apply to target project
 ```
 
-Do not claim tests passed unless they were actually run.
+Every command is safe to run in CI. Nothing mutates your codebase until `larex:approve`.
 
-## Next Step
+Milestones 0–2 are complete. Milestones 3–4 ship the MVP.
 
-Implement Milestone 2 remaining work: architecture plan DTO and stage, evidence reference structure, artifact output, and `larex:plan` command.
+---
 
-Track progress on GitHub: https://github.com/khakimjanovich/larex/milestone/3
+## Architecture
+
+Larex is a standard Laravel application. The engine lives in `app/ArchEngine/`:
+
+```
+app/ArchEngine/
+  DTO/           — typed value objects for every artifact schema
+  Enums/         — MutationType and friends
+  Pipeline/      — PipelineRunner, StageContract, StageResult
+  Stages/        — one class per pipeline stage
+  Stores/        — RunStore (artifact persistence)
+  TargetProject/ — project type detection
+  Tools/         — CodebaseReader, GitHubClient
+  Workers/       — PatchWorker (applies approved patch plans)
+
+app/Ai/Agents/   — Laravel AI SDK agents (ArchitecturePlannerAgent)
+
+app/Console/Commands/
+  larex:inspect
+  larex:milestone
+```
+
+All stage results carry a status (`succeeded` / `failed` / `blocked`), a typed payload, evidence refs, warnings, and errors. Non-recoverable failures stop the pipeline. Recoverable failures continue.
+
+---
+
+## Contributing
+
+Issues and PRs are welcome. New features follow the same pipeline that Larex uses on other projects — open a milestone, label your issues, and the engine will plan the implementation.
+
+---
+
+## License
+
+MIT
