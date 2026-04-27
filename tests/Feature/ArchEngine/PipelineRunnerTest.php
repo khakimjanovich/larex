@@ -79,7 +79,7 @@ class PipelineRunnerTest extends TestCase
         $this->assertSame(['assumption: package version from constraint'], $result->warnings);
         $this->assertSame(['missing approval'], $result->errors);
         $this->assertTrue($result->recoverable);
-        $this->assertFalse($result->succeeded());
+        $this->assertFalse($result->isSuccessful());
     }
 }
 

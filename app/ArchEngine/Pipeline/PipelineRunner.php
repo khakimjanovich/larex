@@ -2,13 +2,27 @@
 
 namespace App\ArchEngine\Pipeline;
 
-class PipelineRunner
+final class PipelineRunner
 {
     /**
-     * Create a new class instance.
+     * @param  iterable<StageContract>  $stages
      */
-    public function __construct()
+    public function run(iterable $stages, ?PipelineRunState $state = null): PipelineRunState
     {
-        //
+        $state ??= PipelineRunState::make();
+
+        foreach ($stages as $stage) {
+            $result = $stage->handle($state);
+
+            $state->recordStageResult($stage->name(), $result);
+
+            if ($result->shouldStopPipeline()) {
+                $state->stopAt($stage->name());
+
+                break;
+            }
+        }
+
+        return $state;
     }
 }
