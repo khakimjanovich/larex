@@ -2,26 +2,28 @@
 
 ## Requirement
 
-REQ-0004: Larex CLI Skeleton.
+REQ-0005: Requirement Normalization.
 
 ## Goal
 
-Expose the first usable Larex inspection surface from the terminal.
+Turn a local Markdown requirement file into a structured `RequirementBrief`.
 
 ## Scope
 
 Created:
 
-- `app/Console/Commands/LarexInspectCommand.php`
-- `config/larex.php`
-- `tests/Feature/ArchEngine/LarexInspectCommandTest.php`
-- `docs/requirements/REQ-0004-larex-cli-skeleton.md`
+- `app/ArchEngine/DTO/RequirementBrief.php`
+- `app/ArchEngine/Tools/RequirementFileReader.php`
+- `app/ArchEngine/Stages/NormalizeRequirementStage.php`
+- `tests/Feature/ArchEngine/NormalizeRequirementStageTest.php`
+- `docs/requirements/REQ-0005-requirement-normalization.md`
 
 ## Out of Scope
 
 - top-level `larex` binary
 - additional CLI commands beyond `larex:inspect`
 - GitHub integration
+- AI parsing
 - approval gates
 - patch planning
 - target project file mutation

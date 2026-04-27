@@ -11,6 +11,7 @@ Larex is a Laravel-controlled architecture reasoning engine for Laravel applicat
 - REQ-0002 target project detection has been implemented as a pure PHP detector and DTO.
 - REQ-0003 pipeline core has been implemented with runner, stage contract, stage result, and run state.
 - REQ-0004 CLI inspect skeleton has been implemented as `php artisan larex:inspect`.
+- REQ-0005 requirement normalization has been implemented as a deterministic Markdown parser and stage.
 
 ## Operating Mode
 
@@ -20,7 +21,7 @@ Do not rely on `AGENTS.md` as permanent product memory. It may provide session i
 
 ## Immediate Next Step
 
-Recommended next requirement: REQ-0005 GitHub Read Integration or Requirement Normalization.
+Recommended next requirement: REQ-0006 GitHub Read Integration or Architecture Plan Stage.
 
 GitHub Read Integration should define and implement:
 

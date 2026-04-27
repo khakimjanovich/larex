@@ -39,7 +39,7 @@ Current implementation status:
 | Target project detection | Implemented | Produces `target-project-facts-v1`. |
 | Pipeline core | Implemented | Runs stages, records results, and stops on non-recoverable failures. |
 | CLI inspect | Implemented | `php artisan larex:inspect` prints structured target facts. |
-| Requirement normalization | Not started | Needed before `larex plan`. |
+| Requirement normalization | Implemented | Deterministic Markdown to `requirement-brief-v1`. |
 | Architecture/risk/patch stages | Not started | Planned after CLI and basic artifact flow. |
 | Approval gate | Not started | Required before meaningful patch execution. |
 | Artifact storage | Not started | Run output persistence is still undefined. |
@@ -60,11 +60,11 @@ It can:
 - continue after a recoverable failed stage
 - run `php artisan larex:inspect`
 - inspect an explicit target with `php artisan larex:inspect --project=/path`
+- normalize local Markdown requirement files into `requirement-brief-v1`
 
 It cannot yet:
 
 - expose a top-level `larex` binary
-- read and normalize requirement files into `RequirementBrief`
 - persist pipeline run artifacts
 - produce architecture plans, risk reports, patch plans, test plans, or approval decisions
 - execute approved code changes
@@ -128,14 +128,14 @@ Planned:
 
 ### Milestone 2: Requirement to Plan Pipeline
 
-Status: planned.
+Status: in progress.
 
 Goal: turn a requirement file into structured planning artifacts.
 
 Planned:
 
-- `RequirementBrief` DTO
-- requirement normalization stage
+- `RequirementBrief` DTO: implemented
+- requirement normalization stage: implemented
 - target inspection stage integrated into the pipeline
 - architecture plan DTO and stage
 - evidence reference structure
@@ -209,6 +209,7 @@ app/
       LarexInspectCommand.php
   ArchEngine/
     DTO/
+      RequirementBrief.php
       TargetProjectFacts.php
     Pipeline/
       PipelineRunner.php
@@ -218,6 +219,10 @@ app/
     TargetProject/
       TargetProject.php
       TargetProjectDetector.php
+    Stages/
+      NormalizeRequirementStage.php
+    Tools/
+      RequirementFileReader.php
 
 docs/
   requirements/
@@ -290,11 +295,11 @@ Do not claim tests passed unless they were actually run.
 
 ## Next Step
 
-Implement REQ-0005: GitHub Read Integration or Requirement Normalization.
+Implement REQ-0006: GitHub Read Integration or Architecture Plan Stage.
 
 Open decision:
 
 ```txt
 If GitHub milestones are the planning source, build read-only GitHub intake next.
-Otherwise build RequirementBrief normalization next.
+Otherwise build the first Architecture Plan stage.
 ```

@@ -42,6 +42,7 @@ Implemented:
 - REQ-0002 target project detection
 - REQ-0003 pipeline core
 - REQ-0004 CLI inspect skeleton
+- REQ-0005 requirement normalization
 
 Important files:
 
@@ -54,10 +55,14 @@ app/ArchEngine/Pipeline/PipelineRunState.php
 app/ArchEngine/Pipeline/StageContract.php
 app/ArchEngine/Pipeline/StageResult.php
 app/Console/Commands/LarexInspectCommand.php
+app/ArchEngine/DTO/RequirementBrief.php
+app/ArchEngine/Stages/NormalizeRequirementStage.php
+app/ArchEngine/Tools/RequirementFileReader.php
 config/larex.php
 tests/Feature/ArchEngine/TargetProjectDetectorTest.php
 tests/Feature/ArchEngine/PipelineRunnerTest.php
 tests/Feature/ArchEngine/LarexInspectCommandTest.php
+tests/Feature/ArchEngine/NormalizeRequirementStageTest.php
 ```
 
 Current verified behavior:
@@ -71,11 +76,12 @@ Current verified behavior:
 - `php artisan larex:inspect` prints structured target project facts
 - `php artisan larex:inspect --project=/path` inspects an explicit path
 - unknown targets return blocked output with exit code 2
+- local Markdown requirement files can be normalized into `requirement-brief-v1`
+- missing or incomplete requirement files return blocked stage results
 
 Not implemented yet:
 
 - GitHub integration
-- requirement normalization
 - artifact persistence
 - architecture planning
 - risk auditing
@@ -88,8 +94,8 @@ Not implemented yet:
 
 The project is choosing between:
 
-1. REQ-0005 GitHub Read Integration
-2. REQ-0005 Requirement Normalization
+1. REQ-0006 GitHub Read Integration
+2. REQ-0006 Architecture Plan Stage
 
 If GitHub becomes the planning source, integrate it as read-only intake first:
 
@@ -117,6 +123,7 @@ docs/requirements/REQ-0001-bootstrap-project-memory.md
 docs/requirements/REQ-0002-target-project-detection.md
 docs/requirements/REQ-0003-pipeline-core.md
 docs/requirements/REQ-0004-larex-cli-skeleton.md
+docs/requirements/REQ-0005-requirement-normalization.md
 ```
 
 Then inspect:
@@ -129,15 +136,15 @@ find tests/Feature/ArchEngine -type f | sort
 Then verify:
 
 ```bash
-php artisan test --compact tests/Feature/ArchEngine/LarexInspectCommandTest.php tests/Feature/ArchEngine/TargetProjectDetectorTest.php tests/Feature/ArchEngine/PipelineRunnerTest.php
+php artisan test --compact tests/Feature/ArchEngine/NormalizeRequirementStageTest.php tests/Feature/ArchEngine/LarexInspectCommandTest.php tests/Feature/ArchEngine/TargetProjectDetectorTest.php tests/Feature/ArchEngine/PipelineRunnerTest.php
 vendor/bin/pint --dirty --format agent
 ```
 
 Expected focused verification:
 
 ```txt
-12 tests pass
-64 assertions pass
+15 tests pass
+82 assertions pass
 Pint passes
 ```
 
