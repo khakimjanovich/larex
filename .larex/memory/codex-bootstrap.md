@@ -41,6 +41,7 @@ Implemented:
 - REQ-0001 project memory
 - REQ-0002 target project detection
 - REQ-0003 pipeline core
+- REQ-0004 CLI inspect skeleton
 
 Important files:
 
@@ -52,8 +53,11 @@ app/ArchEngine/Pipeline/PipelineRunner.php
 app/ArchEngine/Pipeline/PipelineRunState.php
 app/ArchEngine/Pipeline/StageContract.php
 app/ArchEngine/Pipeline/StageResult.php
+app/Console/Commands/LarexInspectCommand.php
+config/larex.php
 tests/Feature/ArchEngine/TargetProjectDetectorTest.php
 tests/Feature/ArchEngine/PipelineRunnerTest.php
+tests/Feature/ArchEngine/LarexInspectCommandTest.php
 ```
 
 Current verified behavior:
@@ -64,10 +68,12 @@ Current verified behavior:
 - pipeline records stage results
 - pipeline stops on non-recoverable failed or blocked results
 - pipeline continues after recoverable failed results
+- `php artisan larex:inspect` prints structured target project facts
+- `php artisan larex:inspect --project=/path` inspects an explicit path
+- unknown targets return blocked output with exit code 2
 
 Not implemented yet:
 
-- CLI commands
 - GitHub integration
 - requirement normalization
 - artifact persistence
@@ -82,8 +88,8 @@ Not implemented yet:
 
 The project is choosing between:
 
-1. REQ-0004 CLI Skeleton
-2. REQ-0004 GitHub Read Integration
+1. REQ-0005 GitHub Read Integration
+2. REQ-0005 Requirement Normalization
 
 If GitHub becomes the planning source, integrate it as read-only intake first:
 
@@ -110,6 +116,7 @@ README.md
 docs/requirements/REQ-0001-bootstrap-project-memory.md
 docs/requirements/REQ-0002-target-project-detection.md
 docs/requirements/REQ-0003-pipeline-core.md
+docs/requirements/REQ-0004-larex-cli-skeleton.md
 ```
 
 Then inspect:
@@ -122,15 +129,15 @@ find tests/Feature/ArchEngine -type f | sort
 Then verify:
 
 ```bash
-php artisan test --compact tests/Feature/ArchEngine/TargetProjectDetectorTest.php tests/Feature/ArchEngine/PipelineRunnerTest.php
+php artisan test --compact tests/Feature/ArchEngine/LarexInspectCommandTest.php tests/Feature/ArchEngine/TargetProjectDetectorTest.php tests/Feature/ArchEngine/PipelineRunnerTest.php
 vendor/bin/pint --dirty --format agent
 ```
 
 Expected focused verification:
 
 ```txt
-9 tests pass
-48 assertions pass
+12 tests pass
+64 assertions pass
 Pint passes
 ```
 

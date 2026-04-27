@@ -10,7 +10,7 @@ Larex is a Laravel-controlled architecture reasoning engine for Laravel applicat
 - Durable project memory has been bootstrapped under `.larex/memory/`.
 - REQ-0002 target project detection has been implemented as a pure PHP detector and DTO.
 - REQ-0003 pipeline core has been implemented with runner, stage contract, stage result, and run state.
-- No Larex CLI commands have been created yet.
+- REQ-0004 CLI inspect skeleton has been implemented as `php artisan larex:inspect`.
 
 ## Operating Mode
 
@@ -20,19 +20,18 @@ Do not rely on `AGENTS.md` as permanent product memory. It may provide session i
 
 ## Immediate Next Step
 
-Recommended next requirement: REQ-0004 CLI skeleton.
+Recommended next requirement: REQ-0005 GitHub Read Integration or Requirement Normalization.
 
-REQ-0004 should define and implement:
+GitHub Read Integration should define and implement:
 
-- `larex inspect` behavior, likely first as an Artisan command unless a bin wrapper is explicitly approved.
-- current-directory target project inspection by default.
-- explicit `--project=/path` target inspection.
-- structured target project facts output.
-- no target project mutation.
+- read-only milestone and issue intake.
+- no GitHub writes.
+- no direct code mutation from GitHub issues or comments.
+- evidence refs such as `github.milestone.{number}` and `github.issue.{number}`.
 
 ## Unknowns
 
 - Artifact run directory layout.
 - Exact `larex` command registration strategy.
 - Approval persistence mechanism.
-- Whether REQ-0004 should expose only `php artisan larex:inspect` first or also a top-level `larex` binary.
+- When to add a top-level `larex` binary wrapper.

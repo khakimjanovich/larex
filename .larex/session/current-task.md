@@ -2,26 +2,26 @@
 
 ## Requirement
 
-REQ-0003: Pipeline Core.
+REQ-0004: Larex CLI Skeleton.
 
 ## Goal
 
-Create the core pipeline types that let Larex run stages in order and stop safely when a stage fails.
+Expose the first usable Larex inspection surface from the terminal.
 
 ## Scope
 
 Created:
 
-- `app/ArchEngine/Pipeline/PipelineRunner.php`
-- `app/ArchEngine/Pipeline/StageContract.php`
-- `app/ArchEngine/Pipeline/StageResult.php`
-- `app/ArchEngine/Pipeline/PipelineRunState.php`
-- `tests/Feature/ArchEngine/PipelineRunnerTest.php`
-- `docs/requirements/REQ-0003-pipeline-core.md`
+- `app/Console/Commands/LarexInspectCommand.php`
+- `config/larex.php`
+- `tests/Feature/ArchEngine/LarexInspectCommandTest.php`
+- `docs/requirements/REQ-0004-larex-cli-skeleton.md`
 
 ## Out of Scope
 
-- CLI commands
+- top-level `larex` binary
+- additional CLI commands beyond `larex:inspect`
+- GitHub integration
 - approval gates
 - patch planning
 - target project file mutation

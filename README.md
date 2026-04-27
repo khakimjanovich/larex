@@ -38,7 +38,7 @@ Current implementation status:
 | Project memory | Implemented | Durable rules live in `.larex/memory/`. |
 | Target project detection | Implemented | Produces `target-project-facts-v1`. |
 | Pipeline core | Implemented | Runs stages, records results, and stops on non-recoverable failures. |
-| CLI | Not started | REQ-0004 is next. |
+| CLI inspect | Implemented | `php artisan larex:inspect` prints structured target facts. |
 | Requirement normalization | Not started | Needed before `larex plan`. |
 | Architecture/risk/patch stages | Not started | Planned after CLI and basic artifact flow. |
 | Approval gate | Not started | Required before meaningful patch execution. |
@@ -58,10 +58,12 @@ It can:
 - record structured stage results with status, payload, evidence refs, warnings, errors, and recoverability
 - stop a pipeline when a failed or blocked stage is not recoverable
 - continue after a recoverable failed stage
+- run `php artisan larex:inspect`
+- inspect an explicit target with `php artisan larex:inspect --project=/path`
 
 It cannot yet:
 
-- expose a real `larex` command
+- expose a top-level `larex` binary
 - read and normalize requirement files into `RequirementBrief`
 - persist pipeline run artifacts
 - produce architecture plans, risk reports, patch plans, test plans, or approval decisions
@@ -111,7 +113,7 @@ Delivered:
 
 ### Milestone 1: CLI Inspect MVP
 
-Status: next.
+Status: implemented.
 
 Goal: expose the first usable Larex surface.
 
@@ -202,6 +204,9 @@ Implemented today:
   session/
 
 app/
+  Console/
+    Commands/
+      LarexInspectCommand.php
   ArchEngine/
     DTO/
       TargetProjectFacts.php
@@ -216,6 +221,8 @@ app/
 
 docs/
   requirements/
+
+config/larex.php
 
 tests/
   Feature/
@@ -283,11 +290,11 @@ Do not claim tests passed unless they were actually run.
 
 ## Next Step
 
-Implement REQ-0004: Larex CLI Skeleton.
+Implement REQ-0005: GitHub Read Integration or Requirement Normalization.
 
 Open decision:
 
 ```txt
-Start as php artisan larex:inspect first, then add a top-level larex
-binary later; or create the top-level larex wrapper now.
+If GitHub milestones are the planning source, build read-only GitHub intake next.
+Otherwise build RequirementBrief normalization next.
 ```
