@@ -11,6 +11,8 @@ Larex turns GitHub milestones into structured, evidence-backed, approval-gated c
 
 You describe what to build. Larex inspects your codebase, plans the architecture using AI, audits risks, produces a patch plan, and **waits for your approval before writing a single file**.
 
+![Larex Demo](demo/demo.gif)
+
 ---
 
 ## The problem
